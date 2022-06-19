@@ -347,5 +347,68 @@ See the tutorial in code, in the topic “Main Thread“.
     });
     ```
 
+### Send event
+- #### * Plataform
+    - ##### Client
+    ```csharp 
+    // Warning: assuming you already have the TcpClient creating and calling client
+
+    // convert a string to bytes (byte[])
+    byte[] messageOrData = ZEncoding.ToBytes("hello server!");
+
+    // send a event to the server
+    client.ToEvent("welcome", messageOrData);
+    ```
+    - ##### Server
+    ```csharp
+    // Warning: assuming you already have the TcpServer creating and calling server
+
+    server.OnData(OnEventHandle);
+
+    void OnEventHandle(TcpClient client, string name, byte[] data)
+    {
+        if (name == "welcome")
+        {
+            // convert a string to bytes (byte[])
+            byte[] messageOrData = ZEncoding.ToBytes("hello client! [GENERIC]");
+
+            // send a event to the client
+            client.ToEvent("welcome", messageOrData);
+        }
+        else
+        {
+            // convert a string to bytes (byte[])
+            byte[] messageOrData = ZEncoding.ToBytes("there's no way to answer you! [GENERIC]");
+
+            // send a error to client event
+            client.ToEvent("welcome error", messageOrData);            
+        }
+    }
+    ```
+
+    ###### you can also use lambda expressions
+    ```csharp
+    // Warning: assuming you already have the TcpServer creating and calling server
+
+    server.OnData((TcpClient client, string name, byte[] data) =>
+    {
+        if (name == "welcome")
+        {
+            // convert a string to bytes (byte[])
+            byte[] messageOrData = ZEncoding.ToBytes("hello client! [LAMBDA]");
+
+            // send a event to the client
+            client.ToEvent("welcome", messageOrData);
+        }
+        else
+        {
+            // convert a string to bytes (byte[])
+            byte[] messageOrData = ZEncoding.ToBytes("there's no way to answer you! [LAMBDA]");
+
+            // send a error to client event
+            client.ToEvent("welcome error", messageOrData);            
+        }
+    });
+    ```
 
 
