@@ -411,4 +411,75 @@ See the tutorial in code, in the topic “Main Thread“.
     });
     ```
 
+### Main Thread
+- #### * Plataform
+    #### __This example is based on unity, but it works on all platforms the same way.__
+    #### [This is already built into the asset store version of the unit in an improved way and is created automatically as soon as you create "ZenetHost"!](https://example.com)
+    <br>
+    The Zenet "API" use callback functions to return their execution results. The various callback functions are called from threads other than the main thread. However, Unity requires function calls or actions (such as UI manipulation) to come from the main thread.
 
+    <br>
+    To solve this problem, use the Unity Main Thread script with your Game content to dispatch callback functions to the main thread. Here’s how:
+
+    ```csharp 
+    using Zenet.Core;
+    using UnityEngine;
+
+    public class MainThread : MonoBehaviour
+    {
+        private void Awake()
+        {
+            // set manual dispatch
+            ZCallback.Manual = true;
+        }
+
+        private void Update()
+        {
+            // dispatch the events
+            ZCallback.Update();
+        }
+    }
+    ```
+
+    #### You can also use and enjoy this implementation see the example below    
+    ```csharp 
+    using Zenet.Core;
+    using UnityEngine;
+    using UnityEngine.UI;
+
+    public class Example : MonoBehaviour
+    {
+        private void Start()
+        {
+            // ....... code .......
+
+            // "create ThreadPool" (thread) to perform "heavy" tasks in the background
+            ZAsync.Execute(() =>
+            {
+                // random number
+                int number = Random.Range(0, 100000000);
+
+                // (index) is 100 million
+                int index = 100000000;
+
+                while(index > 0)
+                {
+                    // check if "index" equals "number"
+                    if (index == number)
+                    {
+                        // execute action on main thread
+                        ZCallback.Execute(() =>
+                        {
+                            Button button = gameObject.GetComponet<Button>();
+                            button.interactable = false;
+                        });
+
+                        break;
+                    }
+                    
+                    // decreasing the (index)
+                    index--;
+                }
+            });
+        }
+    }
