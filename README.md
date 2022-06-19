@@ -305,3 +305,47 @@ See the tutorial in code, in the topic “Main Thread“.
     }
     ```
 
+### Send data
+- #### * Plataform
+    - ##### Client
+    ```csharp 
+    // Warning: assuming you already have the TcpClient creating and calling client
+
+    // convert a string to bytes (byte[])
+    byte[] messageOrData = ZEncoding.ToBytes("hello server!");
+
+    // send a data to the server
+    client.ToData(messageOrData);
+    ```
+    - ##### Server
+    ```csharp
+    // Warning: assuming you already have the TcpServer creating and calling server
+
+    server.OnData(OnDataHandle);
+
+    void OnDataHandle(TcpClient client, byte[] data)
+    {
+        // convert a string to bytes (byte[])
+        byte[] messageOrData = ZEncoding.ToBytes("hello client! [GENERIC]");
+
+        // send a data to the client
+        client.ToData(messageOrData);
+    }
+    ```
+
+    ###### you can also use lambda expressions
+    ```csharp
+    // Warning: assuming you already have the TcpServer creating and calling server
+
+    server.OnData((TcpClient client, byte[] data) =>
+    {
+        // convert a string to bytes (byte[])
+        byte[] messageOrData = ZEncoding.ToBytes("hello client! [LAMBDA]");
+
+        // send a data to the client
+        client.ToData(messageOrData);
+    });
+    ```
+
+
+
