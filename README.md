@@ -411,7 +411,7 @@ See the tutorial in code, in the topic “Main Thread“.
     });
     ```
 
-### Main Thread
+### ZCallback (Main Thread/Callback)
 - #### * Plataform
     #### __This example is based on unity, but it works on all platforms the same way.__
     #### [This is already built into the asset store version of the unit in an improved way and is created automatically as soon as you create "ZenetHost"!](https://example.com)
@@ -483,3 +483,30 @@ See the tutorial in code, in the topic “Main Thread“.
             });
         }
     }
+
+### Async (ZAsync)
+- #### * Plataform
+    #### __"Async or Z Async" is an abstraction that allows you to run your code in the background__ ie your code is running at the same time as your other code! and you are many if you will need to use "MainThread" and "ZCallback.Execute(<my action here>)" to be able to execute your code in the main Thread it is very interesting to use this to perform heavy tasks, ...
+    ```csharp 
+    using Zenet.Core;
+
+    ZAsync.Execute(() => 
+    {
+        // .................. here is async ..................
+
+        int i = 0;
+        
+        // max is 10 milion
+        int max = 10000000;
+
+        while( i < max)
+        {
+            i++;
+        }
+
+        ZCallback.Execute(() =>
+        {
+            Debug.Log($"current (i) is {i}");
+        });
+    });
+    ```
