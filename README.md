@@ -33,6 +33,7 @@ See the tutorial in code, in the topic “Main Thread“.
 - [Send event](#send-event)
 - [ZCallback (Main Thread / Callback)](#zcallback-main-thread--callback)
 - [ZAsync (Async)](#async-zasync)
+- [Socket customization](#socket-customization)
 
 ### Instance creation
 - #### Unity
@@ -518,5 +519,72 @@ See the tutorial in code, in the topic “Main Thread“.
         {
             Debug.Log($"current (i) is {i}");
         });
+    });
+    ```
+
+### Socket customization
+- #### * Plataform
+    - ##### Client
+    ```csharp 
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+
+    // Warning: assuming you already have the TcpClient creating and calling client
+
+    client.BeforeOpen((Socket socket) =>
+    {
+        // more: https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.socket.sendtimeout?view=net-6.0
+
+        // Don't allow another socket to bind to this port.
+        socket.ExclusiveAddressUse = true;
+
+        // Disable the Nagle Algorithm for this tcp socket.
+        socket.NoDelay = true;
+    });
+
+    client.AfterOpen((Socket socket) =>
+    {
+        // more: https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.socket.sendtimeout?view=net-6.0
+
+        // Set the timeout for synchronous receive methods to
+        // 1 second (1000 milliseconds.)
+        socket.ReceiveTimeout = 1000;
+
+        // Set the timeout for synchronous send methods
+        // to 1 second (1000 milliseconds.)
+        socket.SendTimeout = 1000;
+    });
+    ```
+    - ##### Server
+    ```csharp
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+
+    // Warning: assuming you already have the TcpServer creating and calling server
+
+    server.BeforeOpen((Socket socket) =>
+    {
+        // more: https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.socket.sendtimeout?view=net-6.0
+
+        // Don't allow another socket to bind to this port.
+        socket.ExclusiveAddressUse = true;
+
+        // Disable the Nagle Algorithm for this tcp socket.
+        socket.NoDelay = true;
+    });
+
+    server.AfterOpen((Socket socket) =>
+    {
+        // more: https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.socket.sendtimeout?view=net-6.0
+
+        // Set the timeout for synchronous receive methods to
+        // 1 second (1000 milliseconds.)
+        socket.ReceiveTimeout = 1000;
+
+        // Set the timeout for synchronous send methods
+        // to 1 second (1000 milliseconds.)
+        socket.SendTimeout = 1000;
     });
     ```
