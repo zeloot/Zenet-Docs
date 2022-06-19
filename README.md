@@ -24,6 +24,16 @@ See the tutorial in code, in the topic “Main Thread“.
 
 ## Documentation
 
+### Topics
+- [Instance creation](#instance-creation)
+- [Open connection](#open-connection)
+- [Close connection](#close-connection)
+- [Event notification](#event-notification)
+- [Send data](#send-data)
+- [Send event](#send-event)
+- [ZCallback (Main Thread / Callback)](#zcallback-main-thread--callback)
+- [ZAsync (Async)](#async-zasync)
+
 ### Instance creation
 - #### Unity
   - ##### Client
@@ -411,7 +421,7 @@ See the tutorial in code, in the topic “Main Thread“.
     });
     ```
 
-### ZCallback (Main Thread/Callback)
+### ZCallback (Main Thread / Callback)
 - #### * Plataform
     #### __This example is based on unity, but it works on all platforms the same way.__
     #### [This is already built into the asset store version of the unit in an improved way and is created automatically as soon as you create "ZenetHost"!](https://example.com)
