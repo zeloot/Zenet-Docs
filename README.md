@@ -18,6 +18,7 @@ As described the current library runs on all “dotnet” platforms and unity do
 
 ### Warning
 Depending on the platform, the runtime needs to dispatch the messages on its own, relax this is so simple that it only takes 2 lines of code “1 line: it will say that the responsibility of dispatching the messages is manual. This means that when receiving a message it is not dispatched automatically but manually ” and “2nd line: it must be executed in an update or loop, so that each message received is dispatched in the dispatcher loop", that's all. necessary for runtimes like Unity, FlaxEngine, etc. but is already built in [(Unity Asset Store)](https://example.com).
+
 See the tutorial in code, in the topic ([“Main Thread“](#zcallback-main-thread--callback)).
 
 <hr>
