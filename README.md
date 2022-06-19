@@ -72,4 +72,236 @@ See the tutorial in code, in the topic “Main Thread“.
     TcpServer server = new();
     ``` 
 
+### Open connection
+- #### Unity
+    - ##### Client
+    ```csharp
+    using Zenet.Tcp;
+    using Zenet.Unity;
+
+    // automatically create "ZenetHost" when connecting this script to object
+    [RequireComponent(typeof(ZenetHost))]
+    public class Example : MonoBehaviour
+    {
+        public ZenetHost host;
+        public TcpClient client;
+
+        private void Awake()
+        {
+            // get instance of ZenetHost
+            host = GetComponent<ZenetHost>(); 
+
+            // create a instance
+            client = new TcpClient();
+
+            // open connection
+            client.Open(host.GetHost());
+        }
+    }
+    ```
+    - ##### Server
+    ```csharp 
+    using Zenet.Tcp;
+
+    public class Example : MonoBehaviour
+    {
+        public ZenetHost host;
+        public TcpServer server;
+
+        private void Awake()
+        {
+            // get instance of ZenetHost
+            host = GetComponent<ZenetHost>(); 
+
+            // create a instance
+            server = new TcpServer();
+
+            // open connection
+            server.Open(host.GetHost());
+        }
+    }
+    ```
+- #### Dotnet 6
+    - ##### Client
+    ```csharp 
+    using Zenet.Tcp;
+    
+    // create a instance
+    TcpClient client = new();
+
+    // create endpoint host
+    ZHost host = new("127.0.0.1", 8080); 
+
+    // open connection
+    client.Open(host);
+    ```
+    - ##### Server
+    ```csharp
+    using Zenet.Tcp;
+    
+    // create a instance
+    TcpServer server = new();
+
+    // create endpoint host
+    ZHost host = new("127.0.0.1", 8080); 
+
+    // open connection
+    server.Open(host);
+    ```
+
+### Close connection
+- #### * Plataform
+    - ##### Client
+    ```csharp 
+    // Warning: assuming you already have the TcpClient creating and calling client
+
+    // close connection
+    client.Close();
+    ```
+    - ##### Server
+    ```csharp
+    // Warning: assuming you already have the TcpServer creating and calling server
+
+    // close connection
+    server.Close();
+    ```
+
+### Event notification
+- #### * Plataform
+    - ##### Client
+    ```csharp 
+    // Warning: assuming you already have the TcpClient creating and calling client
+
+    // is called when it receives the connection opening event
+    client.OnOpen(OnOpenHandle);
+
+    /* receives the connection open error event.
+        parameters:
+            (Exception e) - connection opening attempt exception */
+    client.OnError(OnErrorHandle);
+
+    // is called when it receives the connection closing event
+    client.OnClose(OnCloseHandle);
+
+    /* is called when it receives a data/message.
+        parameters:
+            ( byte[] data ) - the received data */
+    client.OnData(OnDataHandle);
+
+    /* is called when it receives a "Zenet Event".
+        parameters:
+        (string name) - the name of the received event "is marked when the event is sent"
+        ( byte[] )    - the received data */
+    client.OnEvent(OnEventHandle);
+
+    void OnOpenHandle()
+    {
+        Console.WriteLine("connection opened!");
+    }
+
+    void OnErrorHandle(Exception e)
+    {
+        Console.WriteLine($"error on open connection: {e}");
+    }
+
+    void OnCloseHandle()
+    {
+        Console.WriteLine($"connection closed");
+    }
+
+    void OnDataHandle(byte[] data)
+    {
+        Console.WriteLine($"data received: {ZEncoding.ToString(data)}");
+
+        // echo a data
+        client.ToData(data);
+    }
+
+    void OnEventHandle(string name, byte[] data)
+    {
+        Console.WriteLine($"event received ({name}): {ZEncoding.ToString(data)}");
+
+        // echo a event
+        client.ToEvent(name, data);
+    }
+    ```
+    - ##### Server
+    ```csharp
+    // Warning: assuming you already have the TcpServer creating and calling server
+
+    // is called when it receives the connection opening event
+    server.OnOpen(OnOpenHandle);
+
+    /* receives the connection open error event.
+        parameters:
+            (Exception e) - connection opening attempt exception */
+    server.OnError(OnErrorHandle);
+
+    // is called when it receives the connection closing event
+    server.OnClose(OnCloseHandle);
+
+    /* is called when a client enter "connect" to the server.
+        parameters:
+            ( TcpClient client ) - the client instance on the server "the client's mirror on the server" */
+    server.OnEnter(OnEnterHandle);
+    
+    /* is called when a client exit "disconnect" to the server.
+        parameters:
+            ( TcpClient client ) - the client instance on the server "the client's mirror on the server" */
+    server.OnExit(OnExitHandle);
+
+    /* is called when it receives a data/message.
+        parameters:
+            ( TcpClient client) - the client instance on the server "the client's mirror on the server"
+            ( byte[] data ) - the received data */
+    server.OnData(OnDataHandle);
+
+    /* is called when it receives a "Zenet Event".
+        parameters:
+        ( TcpClient client) - the client instance on the server "the client's mirror on the server"
+        (string name) - the name of the received event "is marked when the event is sent"
+        ( byte[] )    - the received data */
+    server.OnEvent(OnEventHandle);
+
+    void OnOpenHandle()
+    {
+        Console.WriteLine("connection opened!");
+    }
+
+    void OnErrorHandle(Exception e)
+    {
+        Console.WriteLine($"error on open connection: {e}");
+    }
+
+    void OnCloseHandle()
+    {
+        Console.WriteLine($"connection closed");
+    }
+
+    void OnEnter(TcpClient client)
+    {
+        Console.WriteLine($"client enter, id {client.Id}");
+    }
+
+    void OnExit(TcpClient client)
+    {
+        Console.WriteLine($"client exit, id {client.Id}");
+    }
+
+    void OnDataHandle(TcpClient client, byte[] data)
+    {
+        Console.WriteLine($"data received: {ZEncoding.ToString(data)}");
+        
+        // echo a data
+        client.ToEvent(data);
+    }
+
+    void OnEventHandle(TcpClient client, string name, byte[] data)
+    {
+        Console.WriteLine($"event received ({name}): {ZEncoding.ToString(data)}");
+
+        // echo a event
+        client.ToEvent(name, data);
+    }
+    ```
 
